@@ -77,7 +77,9 @@ int kill(pid_t pid, int exit_code);
 void usleep(size_t us);
 void sleep(size_t ms);
 
+#if !defined(__MINGW32__) && !defined(_UCRT)
 int clock_gettime(int what, struct timespec *ti);
+#endif
 
 enum { LOCK_EX, LOCK_NB };
 int flock(int fd, int flag);

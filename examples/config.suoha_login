@@ -1,0 +1,13 @@
+include "examples/config.path"
+
+thread = 8
+logger = nil
+logpath = "."
+harbor = 0
+start = "suoha_login_main"
+bootstrap = "snlua bootstrap"
+cpath = root.."cservice/?.so"
+
+login_host = "0.0.0.0"
+login_port = 10000
+debug_port = 8000

@@ -130,6 +130,7 @@ void sleep(size_t sec) {
     Sleep(sec * 1000UL);
 }
 
+#if !defined(__MINGW32__) && !defined(_UCRT)
 int clock_gettime(int what, struct timespec* ti) {
     switch (what) {
     case CLOCK_MONOTONIC:
@@ -180,6 +181,7 @@ int clock_gettime(int what, struct timespec* ti) {
     }
     return -1;
 }
+#endif
 
 int flock(int fd, int flag) {
     // Not implemented
