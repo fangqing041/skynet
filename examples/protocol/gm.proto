@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package pb_gm;
+
+message GM_C_CMD
+{
+	string cmd = 1;	 
+}
+
+message GM_S_CMD
+{
+	//cmd为透传客户端请求的命令，不包括命令参数
+	//当GM命令失败时此字段不赋值
+	string cmd = 1;
+	
+	//result为GM命令成功与否的信息
+	//当是help命令时，result为帮助信息
+	string result = 2;
+ 
+}

@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+package pb_opcode;
+
+message OPCODE
+{
+	enum Enum
+	{
+		NONE = 0;
+
+		//login 1-50
+		LOGIN_C_LOGIN		= 1;
+		LOGIN_S_LOGIN		= 2;
+		LOGIN_C_CREATE_ROLE = 3; // 第一阶段引导完成后，请求创角：兼容旧版本，新版本不用弹面板，直接发送创角，不需要名字和性别参数
+		LOGIN_S_CREATE_ROLE = 4;
+		LOGIN_C_REGISTER 	= 5;
+		LOGIN_S_REGISTER 	= 6;
+		LOGIN_C_PING 		= 7;
+		LOGIN_S_PONG 		= 8;
+		LOGIN_C_RECONNECT 	= 9;
+		LOGIN_S_RECONNECT 	= 10;
+		LOGIN_C_GUIDE_START	= 11;
+		LOGIN_S_GUIDE_START	= 12;
+		LOGIN_C_UPDATE_LANG = 13;
+		LOGIN_S_UPDATE_LANG = 14;
+        LOGIN_C_CREATE_NAME = 15; // 第二阶段引导完成后弹创角面板，发送名字和性别过来
+        LOGIN_S_CREATE_NAME = 16;
+
+		LOGIN_END			= 50;
+
+		//user 51-100
+		USER_S_UPDATE 					= 51;
+		USER_C_BUY_PHYSICAL 		= 52; // 钻石购买体力请求
+		USER_S_BUY_PHYSICAL 		= 53; // 钻石购买体力返回
+
+
+		USER_S_LOGOUT          = 100; //服务端主动断连接前发送
+
+		LINEUP_C_UPDATE 				= 101;
+		LINEUP_S_UPDATE 				= 102;
+		LINEUP_C_UPDATE_BATTLE 	= 103;
+		LINEUP_S_UPDATE_BATTLE 	= 104;
+
+		BUILD_C_LINEUP 			= 110;
+		BUILD_S_LINEUP 			= 111;
+		BUILD_C_OFFLINE 		= 112;
+		BUILD_S_OFFLINE 		= 113;
+		BUILD_C_UPDATE 			= 114;
+		BUILD_S_UPDATE 			= 115;
+		BUILD_C_UPGRADE			= 116;
+		BUILD_S_UPGRADE			= 117;
+
+		CAMPAIGN_C_REFRESH_SHOP = 132;
+		CAMPAIGN_S_REFRESH_SHOP = 133;
+		CAMPAIGN_C_BUY_SHOP = 134;
+		CAMPAIGN_S_BUY_SHOP = 135;
+		CAMPAIGN_C_START   = 136;
+		CAMPAIGN_S_START = 137;
+		CAMPAIGN_C_OVERLAY = 142;
+		CAMPAIGN_S_OVERLAY = 143;
+		CAMPAIGN_C_EXCHANGE = 144;
+		CAMPAIGN_S_EXCHANGE = 145;
+		CAMPAIGN_C_EXCHANGE_LINEUP = 146;
+		CAMPAIGN_S_EXCHANGE_LINEUP = 147;
+		CAMPAIGN_S_ARM_UPDATE = 148;
+		CAMPAIGN_C_SURRENDER = 149;
+		CAMPAIGN_S_SURRENDER = 150;
+		CAMPAIGN_C_BLESSING_CHOOSE = 153;
+		CAMPAIGN_S_BLESSING_CHOICE = 154;
+		CAMPAIGN_C_BLESSING_REFRESH = 155;
+		CAMPAIGN_S_BLESSING_REFRESH = 156;
+
+		HERO_GROWTH_C_LEVEL_UP = 160;
+		HERO_GROWTH_S_LEVEL_UP = 161;
+		HERO_GROWTH_S_UPDATE = 162;
+
+		USER_END						= 1000;
+
+		SCENE_C_SEARCH_PATH = 1001;//寻路
+		SCENE_S_SEARCH_PATH = 1002;//移动
+		SCENE_C_MOVE = 1003;//移动
+		SCENE_S_MOVE = 1004;//移动
+		SCENE_C_MOVE_STOP = 1005;//停止移动
+		SCENE_S_MOVE_STOP = 1006;//移动
+		SCENE_S_UNIT_STOP = 1007;//场景单位停止视野广播消息
+		SCENE_C_RANGE_UNIT = 1008;//视野范围单位信息
+		SCENE_S_RANGE_UNIT = 1009;//视野范围单位信息返回
+		SCENE_C_RETURN_HOME = 1010;//返回基地
+		SCENE_S_RETURN_HOME = 1011;//返回基地返回
+		SCENE_S_UNIT_ADD = 1012;//单位添加返回
+		SCENE_S_UNIT_REMOVE	= 1013;//单位移除返回
+		SCENE_S_UNIT_UPDATE	= 1014;//单位更新
+		SCENE_C_LEVEL_REWARD = 1015; //领取level奖励
+		SCENE_S_LEVEL_REWARD = 1016; //领取level奖励返回
+		SCENE_S_LEVEL_UPDATE = 1017; //玩家level更新
+		SCENE_END = 1200;
+
+		BATTLE_S_PLAYBACK = 1201; // 战斗回放，战斗状态在场景协议同步
+		BATTLE_C_PLAYEND = 1202; // 通知服务端战斗回放完成，战斗状态在场景协议同步
+		BATTLE_C_START_PVE = 1203; // 进入PVE
+		BATTLE_S_START_PVE = 1204; // 进入PVE返回，先给战报
+		BATTLE_S_BATTLE_START = 1205; // 实时战斗开始/初始化
+		BATTLE_S_ROUND_START = 1206; // 大回合开始，等待操作英雄
+		BATTLE_C_ROUND_START_END = 1207; // 操作英雄结束
+		BATTLE_S_ROUND_START_END = 1208; // 操作英雄结束
+		BATTLE_S_TURN_START = 1209; // 小回合开始，等待操作兵种
+		BATTLE_C_TURN_START_END = 1210; // 操作兵种结束
+		BATTLE_S_TURN_END = 1211; // 小回合结束
+		BATTLE_S_ROUND_END = 1212; // 大回合结束
+		BATTLE_S_BATTLE_END = 1213; // 实时战斗结束
+
+		BATTLE_END = 1400; //战斗结束
+
+		//mail 1401-1450
+		MAIL_C_DELETE         = 1401;
+		MAIL_S_DELETE    	    = 1402;
+		MAIL_C_RECEIVE        = 1403;
+		MAIL_S_RECEIVE        = 1404;
+		MAIL_C_READ           = 1405;
+		MAIL_S_READ           = 1406;
+		MAIL_S_UPDATE         = 1407;
+		MAIL_S_NOTICE_UPDATE  = 1408; //公告新增和修改会发送
+		MAIL_C_NOTICE_INFO    = 1409; //获取公告消息
+		MAIL_S_NOTICE_INFO    = 1410; //获取公告返回
+		MAIL_S_WIN_STREAK_NOTICE    = 1411; //连胜公告
+		MAIL_S_NOTIFICATION_UPDATE	= 1412; //公告更新通知
+
+		MAIL_END              = 1450;
+
+		//item 1701-1800
+		ITEM_C_ITEM_SALE        = 1701; //物品出售请求
+		ITEM_S_ITEM_SALE        = 1702; //物品出售结果
+		ITEM_C_ITEM_USE         = 1703; //物品使用请求
+		ITEM_S_ITEM_USE         = 1704; //物品使用结果
+		ITEM_C_ITEM_COMPOSE     = 1705; //合成请求
+		ITEM_S_ITEM_COMPOSE     = 1706; //合成结果
+		ITEM_S_ITEM_UPDATE      = 1707; //背包物品更新
+		ITEM_S_ITEM_BUFF_UPDATE = 1708; //物品BUFF更新，比如双倍金币
+		ITEM_S_ITEM_TIPS        = 1709; //背包内部提示，根据错误码弹提示
+		ITEM_C_REDEEM_CODE      = 1710; //兑换激活码请求
+		ITEM_S_REDEEM_CODE      = 1711; //兑换激活码返回
+
+		ITEM_END                = 1800;
+
+		//arms 1801-1900
+		ARMS_C_PUT_ITEM         = 1801;
+		ARMS_S_PUT_ITEM         = 1802;
+		ARMS_C_UPGRADE          = 1803;
+		ARMS_S_UPGRADE          = 1804;
+
+		ARMS_END               = 1900;
+
+
+		//gm 32701-32750
+		//放到最后面
+		GM_C_CMD				= 32701;
+		GM_S_CMD				= 32702;
+		GM_C_DEL_ACCOUNT	= 32703; // 删号
+		GM_S_DEL_ACCOUNT	= 32704;
+		GM_S_TEST	= 32705;
+
+		GM_END                  = 32750;
+	}
+}

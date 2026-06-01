@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package pb_arms;
+
+message ArmyCultivationInfo {
+  int32 armyId = 1;
+  int32 star = 2;
+  int32 stage = 3;
+  repeated int32 itemIds = 4;
+}
+
+message ArmyCultivationAllInfo {
+  repeated ArmyCultivationInfo list = 1;
+}
+
+message ARMS_C_PUT_ITEM {
+  int32 armyId = 1;
+  int32 itemId = 2;
+}
+
+message ARMS_S_PUT_ITEM {
+  ArmyCultivationInfo info = 1;
+}
+
+message ARMS_C_UPGRADE {
+  int32 armyId = 1;
+}
+
+message ARMS_S_UPGRADE {
+  ArmyCultivationInfo info = 1;
+}

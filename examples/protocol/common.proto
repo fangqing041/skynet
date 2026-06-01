@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package pb_common;
+
+// 充值道具枚举类型
+message PRODUCT_TYPE
+{
+    enum Enum
+    {
+        NONE = 0;
+        DIAMOND = 1; // 钻石
+    }
+}
+
+message Reward
+{
+    int32 item_id = 1;//原始物品id
+    int32 count = 2;//原始物品数量
+    bool is_new = 3;//是否新获得
+    map<int32, int32> replace_items = 4;// 替换的物品
+}
+
+message RewardInfo
+{
+    repeated Reward rewards = 1; //领取成功奖励
+}

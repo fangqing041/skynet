@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+package pb_campaign;
+
+import "common.proto";
+
+message CampaignBlessingInfo {
+  int32 id = 1;          // 赐福配置id
+  int32 stackNum = 2;    // 当前层数
+  int32 tier = 3;        // 当前档位
+  int32 progress = 4;    // 当前进度
+}
+
+message CampaignInfo {
+  int32 curId = 1;    // 当前战役id
+  map<int32, ArmInfo> armMap = 2; // 仓库中的兵种数据
+  map<int32, ArmInfo> lineup = 3; // 已上阵的兵种数据
+  repeated int32 passCampaignIds = 4; // 已通关战役id列表
+  repeated ShopItem shopItem = 5;
+  int32 refreshPrice = 6; // 刷新商店价格
+  repeated int32 passIds = 7;  // 当前战役已通关关卡id列表
+  int32 selectId = 8;   // 当前选中的关卡id(可能为0)
+  repeated CampaignBlessingInfo blessingList = 9; // 当前已获得赐福列表
+  repeated int32 blessingChoiceList = 10; // 当前三选一候选赐福id列表
+  bool isBlessingChoice = 11; // 是否正处于三选一状态
+  int32 blessingChoiceId = 12; // 当前三选一轮次id
+  int32 blessingChoiceBattleIndex = 13; // 当前三选一对应的关卡序号
+  int32 blessingRefreshCount = 14; // 当前战役已刷新三选一的次数
+}
+
+message ArmInfo {
+  int32 x = 1;
+  int32 y = 2;
+  int32 armyId = 3;  // 兵种配置id
+  int32 armyNum = 4; // 兵种数量
+  int32 id = 5;      // 兵种唯一id
+}
+
+message ShopItem {
+  int32 armId = 1;
+  int32 num = 2;
+  int32 index = 3;
+  bool lock = 4;      // 是否锁定
+  bool enough = 5;    // 是否能购买
+  int32 discount = 6; // 折扣万分比，如1000表示优惠10%（打九折）
+  int32 currentPrice = 7; // 当前购买价格（折扣后），前端直接显示
+}
+
+// 已上阵的单位批量更新坐标
+message CAMPAIGN_C_EXCHANGE {
+  repeated ArmInfo list = 1;
+}
+
+message CAMPAIGN_S_EXCHANGE {
+  CampaignInfo info = 1;
+}
+
+// 仓库、上阵的兵种交换位置
+message CAMPAIGN_C_EXCHANGE_LINEUP {
+  repeated ArmInfo warehouse = 1; // 当前在仓库 准备上阵
+  repeated ArmInfo line = 2;      // 上阵中  准备下阵
+}
+
+message CAMPAIGN_S_EXCHANGE_LINEUP {
+  CampaignInfo info = 1;
+}
+
+// 上阵-兵种叠加
+message CAMPAIGN_C_OVERLAY {
+  int32 from = 1;   // 仓库中的index
+  int32 to = 2;     // 上阵的index
+}
+
+message CAMPAIGN_S_OVERLAY {
+  CampaignInfo info = 1;
+}
+
+// 刷新商店
+message CAMPAIGN_C_REFRESH_SHOP {
+}
+
+message CAMPAIGN_S_REFRESH_SHOP {
+  CampaignInfo info = 1;
+}
+
+// 提交赐福选择
+message CAMPAIGN_C_BLESSING_CHOOSE {
+  int32 choiceId = 1;
+  int32 blessingId = 2; // 选中的赐福id；放弃时为0
+}
+
+message CAMPAIGN_S_BLESSING_CHOICE {
+  int32 choiceId = 1;
+  int32 blessingId = 2;
+  CampaignInfo info = 3;
+}
+
+// 刷新赐福候选
+message CAMPAIGN_C_BLESSING_REFRESH {
+  int32 choiceId = 1;
+}
+
+message CAMPAIGN_S_BLESSING_REFRESH {
+  CampaignInfo info = 1;
+}
+
+// 商店购买
+message CAMPAIGN_C_BUY_SHOP {
+  int32 index = 1;
+}
+
+message CAMPAIGN_S_BUY_SHOP {
+  CampaignInfo info = 1;
+}
+
+// 开启战役
+message CAMPAIGN_C_START {
+  int32 campaignId = 1;
+}
+
+message CAMPAIGN_S_START {
+  CampaignInfo info = 1;
+}
+
+message CAMPAIGN_S_ARM_UPDATE {
+  map<int32, ArmInfo> armMap = 1; // 仓库中的兵种数据
+}
+
+// 放弃当前战役
+message CAMPAIGN_C_SURRENDER {
+  int32 campaignId = 1;
+}
+
+message PlayerExpChange {
+  int32 add_exp = 1; // 本次增加经验
+  int32 old_level = 2;
+  int64 old_exp = 3;
+  int32 new_level = 4;
+  int64 new_exp = 5;
+  bool level_up = 6;
+}
+
+message CAMPAIGN_S_SURRENDER {
+  CampaignInfo info = 1;
+  pb_common.RewardInfo random_rewards = 2; // 奖励 key：奖励类型 value：奖励数量
+  pb_common.RewardInfo first_rewards = 3; // 奖励 key：奖励类型 value：奖励数量
+  PlayerExpChange exp_change = 4; // 玩家经验变化
+}

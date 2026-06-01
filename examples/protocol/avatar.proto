@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package pb_avatar;
+
+message AvatarItemInfo
+{
+    int32 template_id = 1; // 头像，头像，横条框模板ID
+    bool is_checked = 2; // 是否查看过
+    int32 get_time = 3; // 获得时间，单位：秒
+    int32 expire_time = 4; // 过期时间，单位：秒
+}
+
+message AvatarAllInfo
+{
+    int32 avatar = 1; // 当前玩家头像
+    int32 avatar_frame = 2; //当前头像框
+    repeated AvatarItemInfo avatar_list = 3;  // 头像列表
+    repeated AvatarItemInfo avatar_frame_list = 4; // 头像框列表
+    repeated AvatarItemInfo emoji_list = 5; // 已获得表情列表
+    repeated int32 near_use_emojis = 6; // 最近使用的表情列表 注:最近使用的在最后面
+    int32 avatar_stripe = 7; //当前横条
+    repeated AvatarItemInfo avatar_stripe_list = 8; // 横条列表
+}
+
+message AVATAR_C_BUY_AVATAR
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_S_AVATAR_UPDATE
+{
+    repeated AvatarItemInfo list = 1;
+}
+
+message AVATAR_C_CHECK_AVATAR
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_C_SET_AVATAR
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_S_SET_AVATAR
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_C_BUY_AVATAR_FRAME
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_S_AVATAR_FRAME_UPDATE
+{
+    repeated AvatarItemInfo list = 1;
+}
+
+message AVATAR_C_CHECK_AVATAR_FRAME
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_C_SET_AVATAR_FRAME
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_S_SET_AVATAR_FRAME
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_S_UPDATE_EMOJI
+{
+    repeated AvatarItemInfo emoji_list = 1; // 更新表情，是增量更新，可能一个也可能多个
+}
+
+// 设置背景横幅
+message AVATAR_C_SET_AVATAR_STRIPE
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_S_SET_AVATAR_STRIPE
+{
+    int32 template_id = 1;
+}
+
+message AVATAR_C_CHECK_AVATAR_STRIPE
+{
+    int32 template_id = 1;
+}
+message AVATAR_S_AVATAR_STRIPE_UPDATE
+{
+    repeated AvatarItemInfo list = 1;
+}
+message AVATAR_C_BUY_AVATAR_STRIPE
+{
+    int32 template_id = 1;
+}

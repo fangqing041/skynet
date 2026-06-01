@@ -1,0 +1,273 @@
+syntax = "proto3";
+
+package pb_battle;
+
+import "common.proto";
+import "campaign.proto";
+
+message Vec2 {
+    int32 x = 1;
+    int32 y = 2;
+}
+
+message BattleArm {
+    int32 arm_id = 1;
+    UnitState unit = 2;
+}
+
+message BattleHero {
+    int64 hero_id = 1;
+    UnitState unit = 2;
+    repeated BattleArm arms = 3;
+}
+
+message BattlePlayer {
+    int64 player_id = 1;
+    string name = 2;
+    int32 team_id = 3;
+    repeated BattleHero heroes = 4;
+    repeated BattleArm arms = 5; // 不附属于英雄的Arm
+    int32 energy = 6; // 当前魔力值
+    int32 max_energy = 7; // 魔力上限
+}
+
+message EffectInfo {
+    enum EffectType {
+        NONE = 0;
+        DAMAGE = 1;
+        HEAL = 2;
+        ADD_BUFF = 3;
+        CHANGE_ATTR = 4;
+        CHANGE_SHIELD = 5;
+        GRAB = 6;
+        REMOVE_BUFF = 7;
+        ADD_UNIT = 8;
+        DICE = 9;
+        DIVIDER = 10;
+    }
+    enum DamageType {
+        NORMAL = 0;
+        CRIT = 1;
+        RETAL = 2;
+        DODGE = 3; // 闪避
+    }
+    int32 target_unit_id = 1;
+    int32 effect_type = 2; // 1伤害 2回血 3加buff
+    int32 effect_num = 3;
+    BuffInfo buff = 4;
+    map<int32, int32> attrs = 5;
+    Vec2 pos = 6; // effect_type为7时，表示勾过来的位置，为null则不勾
+    int32 damage_type = 7; // 伤害类型： 0 普通 1 暴击 2 反击
+    UnitState add_unit = 8;//新增单位信息
+    bool is_trigger = 9;
+}
+
+message SkillAction {
+    int32 skill_id = 1;
+    int32 target_unit_id = 2; // 范围技能是0
+    repeated EffectInfo effects = 3;
+    Vec2 skill_pos = 4; // 技能释放影响范围
+}
+
+message BuffEffect {
+    int32 buff_id = 1;
+    int32 source_unit_id = 2; // 来源id
+    repeated EffectInfo effects = 3;
+}
+
+message UnitTurnUpdate {
+    repeated int32 round_units = 1;
+    int32 current_idx = 2;
+}
+
+message EnergyChange {
+    int64 player_id = 1;
+    int32 energy = 2; // 变化后的当前魔力值
+    int32 max_energy = 3; // 魔力上限
+}
+
+message RageChange {
+    int64 unit_id = 1; // 英雄 unitId
+    int32 rage = 2;    // 变化后的当前怒气值
+}
+
+message BattleAction {
+    enum ActionType {
+        NONE = 0;
+        MOVE = 1;
+        SKILL = 2;
+        BUFF = 3;
+        TURN_UPDATE = 4;
+        DEAD = 5;
+        ENERGY = 6;
+        RAGE = 7;
+    }
+    int32 unit_id = 1;
+    int32 action_type = 2; // 1移动 2技能效果 3buff效果 4更新单位顺序 5单位死亡 6魔力值变化 7怒气值变化
+    repeated Vec2 move_path = 3;
+    SkillAction skill_action = 4;
+    BuffEffect buff_effect = 5;
+    UnitTurnUpdate turn_update = 6;
+    bool async = 7; // 是否异步Action
+    repeated BattleAction trigger_actions = 8; // 嵌套的Action，用作关联表现
+    int32 link_skill = 9; // 往后找第一个这个技能Action
+    int32 killer_unit_id = 10; // dead时击杀者单位ID
+    EnergyChange energy_change = 11; // 魔力值变化
+    RageChange rage_change = 12; // 怒气值变化
+}
+
+message BuffInfo {
+    int32 buff_id = 1;
+    int32 end_round = 2; // -1 永久buff
+    int32 stack = 3; // 堆叠层数
+    int32 source_id = 4; // 来源id
+    int32 buff_value = 5; // buff值
+}
+
+// 单位状态信息英勇和兵种公用结构
+message UnitState {
+    enum UnitType {
+        NONE = 0;
+        HERO = 1;
+        ARM = 2;
+    }
+    int32 unit_type = 1;
+    int32 unit_id = 2;
+    int32 arm_id = 3;
+    int32 hero_id = 4;
+    int32 num = 5;
+    bool is_dead = 6;
+    Vec2 pos = 7;
+    repeated BuffInfo buffs = 8;
+    map<int32, int32> attrs = 9;
+    int32 hp = 10;
+    int32 shield = 11;
+    int32 max_hp = 12;
+    int32 rage = 13;      // 怒气（英雄使用）
+    int32 max_rage = 14;  // 怒气上限（英雄使用）
+}
+
+message BattleRound {
+    int32 round_id = 1;
+    UnitTurnUpdate turn_update = 2;
+    repeated BattleAction actions = 3;
+    repeated UnitState units = 4; // 回合结束后的单位状态
+}
+
+message BattlePlayback {
+    int64 battle_id = 1;
+    BattlePlayer attacker = 2;
+    BattlePlayer defenser = 3;
+    int32 result = 4; // 1 攻击方胜利，2 防御方胜利，3 平局
+    repeated BattleAction battle_start_actions = 5;
+    repeated UnitState units = 6; // 战斗开始的单位状态
+    repeated BattleRound rounds = 7;
+    int32 level_id = 8; // pve关卡id 不等于0时，表示是pve战斗
+    int32 map_id = 9;//地图id
+    int64 battle_seed = 10; // 战斗随机种子，用于复盘和问题排查
+}
+
+message BATTLE_S_PLAYBACK {
+    BattlePlayback playback = 1;
+}
+
+message BATTLE_C_PLAYEND {
+    int32 team_id = 1;
+    int64 battle_id = 2;
+    // 播完关闭界面请求战斗结束，场景通知战斗结束
+}
+
+message BATTLE_C_START_PVE {
+    int32 level_id = 1;
+}
+
+message PlayerExpChange {
+    int32 add_exp = 1; // 本次增加经验
+    int32 old_level = 2;
+    int64 old_exp = 3;
+    int32 new_level = 4;
+    int64 new_exp = 5;
+    bool level_up = 6;
+}
+
+message BATTLE_S_START_PVE {
+    BattlePlayback playback = 1; // 实时战斗会是null, 等待战斗开始协议
+    pb_common.RewardInfo fixed_rewards = 2; // 奖励 key：奖励类型 value：奖励数量
+    pb_common.RewardInfo refund_rewards = 3; // 额外补偿(兵损补偿)
+    bool campaign_reward = 4;       // 是否战役结算
+    pb_common.RewardInfo random_rewards = 5; // 奖励 key：奖励类型 value：奖励数量
+    pb_common.RewardInfo first_rewards = 6; // 奖励 key：奖励类型 value：奖励数量
+    pb_campaign.CampaignInfo campaign = 7;
+    pb_campaign.PlayerExpChange exp_change = 8; // 玩家经验变化
+}
+
+message BATTLE_S_BATTLE_START {
+    int64 battle_id = 1;
+    BattlePlayer attacker = 2;
+    BattlePlayer defenser = 3;
+    repeated BattleAction battle_start_actions = 4;
+    repeated UnitState units = 5; // 战斗开始的单位状态
+    int32 level_id = 6; // pve关卡id 不等于0时，表示是pve战斗
+    int32 map_id = 7;//地图id
+    uint32 client_seq = 8; // 重连时的序列
+}
+
+message BATTLE_S_ROUND_START {
+    int32 round_id = 1;
+}
+
+message CommandAction {
+    enum CommandType {
+        NONE = 0;
+        MOVE = 1;
+        SKILL = 2;
+    }
+    int32 command_type = 1;
+    int32 unit_id = 2; // ROUND_FINISH传英雄的操作，TURN_FINISH传兵种操作
+    int32 skill_id = 3;
+    Vec2 pos = 4; // 移动到的位置或技能的位置
+    int32 target_unit_id = 5; // 目标单位ID
+}
+
+message BATTLE_C_ROUND_START_END {
+    int32 round_id = 1;
+    repeated CommandAction commands = 2;
+    uint32 client_seq = 3; // 客户端单调递增序号，用于幂等和乱序保护
+}
+
+message BATTLE_S_ROUND_START_END {
+    int32 round_id = 1;
+    UnitTurnUpdate turn_update = 2;
+    repeated BattleAction actions = 3;
+}
+
+message BATTLE_S_TURN_START {
+    int32 round_id = 1;
+    UnitTurnUpdate turn_update = 2;
+}
+
+message BATTLE_C_TURN_START_END {
+    int32 round_id = 1;
+    int32 current_idx = 2;
+    repeated CommandAction commands = 3;
+    uint32 client_seq = 4; // 客户端单调递增序号，用于幂等和乱序保护
+}
+
+message BATTLE_S_TURN_END {
+    int32 round_id = 1;
+    UnitTurnUpdate turn_update = 2;
+    repeated BattleAction actions = 3;
+}
+
+message BATTLE_S_ROUND_END {
+    int32 round_id = 1;
+    repeated BattleAction actions = 2;
+    repeated UnitState units = 3; // 回合结束后的单位状态
+}
+
+message BATTLE_S_BATTLE_END {
+    int32 result = 1; // 战斗结束
+    pb_common.RewardInfo first_rewards = 2; // 奖励 key：奖励类型 value：奖励数量
+    pb_common.RewardInfo fixed_rewards = 3; // 奖励 key：奖励类型 value：奖励数量
+    pb_common.RewardInfo random_rewards = 4; // 奖励 key：奖励类型 value：奖励数量
+}

@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package pb_item;
+
+import "common.proto";
+
+message ITEM_BUFF_TYPE
+{
+    enum Enum
+    {
+        NONE = 0;
+        DOUBLE_GOLD = 1; // 双倍金币
+        DOUBLE_TICKET_POINT = 2; // 双倍季票点
+    }
+}
+
+message ItemInfo
+{
+    int32 template_id = 1;
+    int32 item_count = 2;
+}
+
+message ItemBuffInfo
+{
+    int32 buff_type = 1;
+    int32 buff_value = 2; // 数量或过期时间
+}
+
+message AllItemInfo
+{
+    repeated ItemInfo items = 1; // 背包物品
+    repeated ItemBuffInfo item_buffs = 2; // 物品加成BUFF
+}
+
+message ITEM_C_ITEM_SALE
+{
+    int32 template_id = 1; // 物品ID
+    int32 item_count = 2; // 要售出的物品数量
+}
+
+message ITEM_S_ITEM_SALE
+{
+    pb_common.RewardInfo rewards = 1;
+}
+
+message ITEM_C_ITEM_USE
+{
+    int32 template_id = 1; // 物品ID
+    int32 item_count = 2; // 要使用的物品个数
+    int32 use_param1 = 3; // 使用参数，不同物品意义不一样
+}
+
+message ITEM_C_ITEM_COMPOSE
+{
+    int32 template_id = 1; // 物品ID
+    int32 compose_count = 2; // 合成次数
+}
+
+message ITEM_S_ITEM_COMPOSE
+{
+    pb_common.RewardInfo rewards = 1;
+}
+
+message ITEM_S_ITEM_UPDATE
+{
+    repeated ItemInfo items = 1; // 背包增量更新
+}
+
+message ITEM_S_ITEM_BUFF_UPDATE
+{
+    repeated ItemBuffInfo item_buffs = 1; // 物品BUFF增量更新
+}
+
+message ITEM_C_REDEEM_CODE
+{
+    string redeem_code = 1;
+}
+
+message ITEM_S_REDEEM_CODE
+{
+    pb_common.RewardInfo rewards = 1;
+}

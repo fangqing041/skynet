@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package pb_commdef;
+
+
+//物品类型
+message ITEM_TYPE
+{
+	enum Enum
+	{
+		NONE = 0;
+		GOLD = 1;//金币
+		DIAMOND = 2;//灵玉
+  }
+}
+
+//物品页签
+message ITEM_TAG
+{
+	enum Enum
+	{
+		NONE = 0;
+		NO_BAG = 1;//不进背包
+		FRAGMENT = 2;//碎片
+		ITEM = 3;//道具
+	}
+}
+
+//付费功能入口
+message PAY_PORTAL
+{
+	enum Enum
+	{
+		NONE = 0;
+		DIAMOND_SHOP = 1;//灵玉商店
+		GOLD_TICKET = 2;//黄金季票
+		ARENA_GIFT = 3;//竞技场礼包
+		DISCOUNT_PACKAGE = 4;//特惠礼包
+		PIGGY_BANK = 5;//存钱罐
+		DAILY_DISCOUNT = 6;// 每日特惠
+		DYNAMIC_RECHARGE = 7; //动态充值
+	}
+}
+
+message ITEM_EXPIRE_TYPE
+{
+	enum Enum
+	{
+		FOREVER = 0;//永久物品
+		SEASON = 1;//跟随赛季
+	}
+}

@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package pb_team;
+
+message TEAM_TYPE
+{
+    enum Enum
+    {
+        NONE = 0;
+        ONE = 1; // 一人小队
+        TWO = 2; // 两人小队
+        FRIENDLY_FIGHT = 3;//局内友谊战
+        FRIENDLY_FIGHT_OUT = 4;//局外友谊战
+        COMPETITION = 5;//赛事比赛
+    }
+}
+
+
+
+// 玩家状态
+message TEAM_MEMBER_STATE
+{
+    enum Enum
+    {
+        WAIT    = 0; //等待入队
+        READY   = 1; // 准备
+        UNREADY = 2; // 未准备
+        LEAVE   = 3; // 暂时离开（最小化）
+        BATTLE  = 4; // 在战斗中
+    }
+}
+
+// 选择匹配的AI类型
+message ROBOT_TYPE
+{
+    enum Enum
+    {
+        NONE = 0;
+        CHANGE_SCORE = 1;
+        ZERO_SCORE = 2;
+    }
+}
+
+// 队伍玩家信息
+message TeamPlayerProto {
+    int64 player_id   = 1; // 玩家Id
+    int32 avatar      = 2; // 头像
+    string name       = 3; // 昵称
+    int32 score       = 4; // 积分
+    int32 server_id   = 5; // 玩家所在serverID
+    int32 guild_id    = 6; // 仙盟id
+    string guild_name = 7; // 仙盟名
+    int32 index       = 8; // 玩家在队伍的下标
+    int32 state       = 9; // 玩家状态
+    int32 avatar_frame = 10; // 玩家头像框
+}
+
+// 创建队伍
+message TEAM_C_CREATE {
+    int32 team_type  = 1; // 小队类型
+    int32 match_type = 2; // 入口模式
+    string channel_id = 3; //友谊战频道
+    int32 map_id      = 4; // 地图ID，后续需要支持选地图，前端再传过来
+    bool is_open_trap = 5; // 是否开启机关
+}
+
+// 加入队伍
+message TEAM_C_ENTER {
+    int64 team_id = 1;
+    int32 team_type  = 2; // 小队类型
+}
+
+// 修改队伍模式
+message TEAM_C_MODE {
+    int32 match_type = 1;
+}
+
+// 修改个人状态(准备/取消准备/返回主界面)
+message TEAM_C_SELF_STATE {
+    int32 state   = 1;
+}
+
+// 转让房主
+message TEAM_C_TRANSFER_MASTER {
+    int32 index   = 1;
+}
+
+// 取消邀请
+message TEAM_C_CANCEL_INVITE {
+    int32 index   = 1;
+}
+
+// 小队信息查看（刚创建/加入/返回房间）
+message TEAM_S_CMD_INFO {
+    int64 id                     = 1; // 小队ID
+    int32 master_index           = 2; // 房主标识
+    int32 team_type              = 3; // 队伍类型
+    int32 match_type             = 4; // 战斗模式
+    repeated TeamPlayerProto team_players = 5; // 队伍列表
+    int32 remain_time            = 6; // 剩余时间(秒)
+    int32 map_id                 = 7; // 地图ID
+    bool is_open_trap            = 8; // 是否开启机关
+}
+
+
+// 队员加入
+message TEAM_S_CMD_MEMBER_NEW {
+    int32 index            = 1;
+    TeamPlayerProto player = 2;
+}
+
+// 队员状态变更
+message TEAM_S_CMD_MEMBER_STATE {
+    int32 index  = 1;
+    int32 state = 2;
+}
+
+// 队员离开通知
+message TEAM_S_CMD_MEMBER_LEAVE {
+    int32 index = 1;
+    int64 player_id = 2; // 服务器使用
+    bool cancel_invite = 3; // true：踢 false：正常离开
+}
+
+// 队伍模式变更
+message TEAM_S_CMD_MODE {
+    int32 match_type = 1;
+}
+
+// 队伍房主变更
+message TEAM_S_CMD_MASTER {
+    int32 index = 1;
+}
+// 匹配确认可以匹陪练AI, AI的类型 ROBOT_TYPE
+message TEAM_C_BATTLE_CONFIRM_AI {
+    int32 robot_type = 1;
+}

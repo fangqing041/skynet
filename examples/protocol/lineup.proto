@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package pb_lineup;
+
+import "common.proto";
+
+// 更新上阵兵种数据
+message LINEUP_C_UPDATE
+{
+  repeated Arms arms = 1;
+}
+
+message LINEUP_S_UPDATE
+{
+  LineupInfo info = 1;
+}
+
+message Arms
+{
+  int32 heroId = 1;  // 英雄id
+  repeated BattleLineup list = 2; // 兵种数据
+}
+
+// 设置战斗站位
+message LINEUP_C_UPDATE_BATTLE
+{
+  repeated BattleLineup list = 1;
+}
+
+message LINEUP_S_UPDATE_BATTLE
+{
+  repeated BattleLineup list = 1;
+}
+
+message BattleLineup
+{
+  int32 x = 1;
+  int32 y = 2;
+  int32 armyId = 3;  // 兵种id
+  int32 armyNum = 4; // 兵种数量
+  int32 heroId = 5;  // 所属英雄
+  int32 index = 6;   // 兵种序号 1，2，3...
+}
+
+message LineupInfo
+{
+  repeated Arms arms = 1;
+}

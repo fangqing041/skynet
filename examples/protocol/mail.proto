@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+package pb_mail;
+
+import "common.proto";
+
+
+//邮箱类型
+message MAIL_TYPE
+{
+	enum Enum
+	{
+		NONE = 0;
+		SYS = 1;	// 系统邮件
+		PERSONAL = 2;  // 个人邮件
+	}
+}
+
+//邮箱状态
+message MAIL_STATE
+{
+	enum Enum
+	{
+		NONE = 0;
+		UNREAD = 1;
+		READ = 2;
+		RECEIVED = 3;
+	}
+}
+
+message Mail
+{
+	int64 id = 1;
+	int64 time = 2;
+	map<string, string> content = 3;
+	map<string, string> sender = 4;
+	int32 state = 5;
+	int32 type = 6; //类型 1:表示系统邮件， 2:表示个人邮件
+	repeated pb_common.Reward rewards = 7;
+	map<string, string> title = 8;
+	int32 template_id = 9;
+	repeated string template_args = 10;
+	int64 mail_time_start = 11; // 邮件起始时间
+	int64 mail_time_end   = 12; // 邮件结束时间
+}
+
+message NoticeInfo
+{
+	int32 id = 1; //公告ID
+	int32 type = 2; //公告类型：1 系统公告， 2 更新公告， 3 维护公告（跑马灯）4 健康系统公告 5 安全处罚公告 6 防诈骗警示
+	int64 start_time = 3; //公告开始时间
+	int64 end_time = 4; //公告结束时间
+	string title = 5; //公告标题
+	string content = 6; //公告内容
+	bool auto_eject = 7; // 是否自动弹出公告
+	int32 space_time = 8; //循环间隔时间，秒
+}
+
+message MAIL_S_NOTIFICATION_UPDATE
+{
+	int32 type = 1; //1 游戏外公告管理  2 游戏内公告管理
+}
+
+message MAIL_C_DELETE
+{
+	int64 id = 1;
+}
+
+message MAIL_S_DELETE
+{
+	repeated int64 id = 1;
+}
+
+message MAIL_C_RECEIVE
+{
+	int64 id = 1;
+}
+
+message MAIL_S_RECEIVE
+{
+	repeated int64 id = 1;
+//	repeated pb_common.Reward rewards	= 2;
+//	repeated pb_common.BoxRewardInfo box_infos			= 3;	//若有宝箱，计算好宝箱物品并下发
+	pb_common.RewardInfo reward_infos = 2;// 奖励信息
+}
+
+message MAIL_C_READ
+{
+	int64 id = 1;
+}
+
+message MAIL_S_READ
+{
+	int64 id = 1;
+}
+
+message MAIL_S_UPDATE
+{
+	repeated pb_mail.Mail mails              = 1;
+}
+
+message MAIL_S_NOTICE_UPDATE
+{
+	NoticeInfo notice_info = 1; //公告信息
+}
+
+message MAIL_S_NOTICE_INFO {
+	repeated NoticeInfo notice_info = 1; //公告信息
+}
+
+message MAIL_S_WIN_STREAK_NOTICE {
+	int64 player_id = 1;
+	string name = 2;
+	int32 win_count = 3;
+}

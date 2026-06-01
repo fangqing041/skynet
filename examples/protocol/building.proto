@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package pb_building;
+
+message BuildPb {
+  int64 id = 1; // 建筑唯一id，新上阵的传0
+  int32 configId = 2;
+  int32 x = 3;
+  int32 y = 4;
+}
+
+message BuildInfo {
+  repeated BuildPb buildInfo = 1;
+}
+
+// 上阵建筑
+message BUILD_C_LINEUP {
+  BuildPb build = 1;
+}
+
+message BUILD_S_LINEUP {
+  BuildInfo info = 1;
+}
+
+// 下阵建筑
+message BUILD_C_OFFLINE {
+  int64 id = 1;
+}
+
+message BUILD_S_OFFLINE {
+  BuildInfo info = 1;
+}
+
+// 更新建筑坐标
+message BUILD_C_UPDATE {
+  BuildPb build = 1;
+}
+
+message BUILD_S_UPDATE {
+  BuildInfo info = 1;
+}
+
+// 建筑升级
+message BUILD_C_UPGRADE {
+  int64 id = 1;
+}
+
+// 建筑升级
+message BUILD_S_UPGRADE {
+  BuildInfo info = 1;
+}

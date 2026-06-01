@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package pb_login;
+
+import "mail.proto";
+import "user.proto";
+import "common.proto";
+import "item.proto";
+import "avatar.proto";
+import "lineup.proto";
+import "scene.proto";
+import "building.proto";
+import "campaign.proto";
+import "hero_growth.proto";
+import "arms.proto";
+
+message Enter
+{
+  int64 id                      = 1;
+  string name                   = 2;
+  int32 avatar                  = 3; //不再使用
+  int64 camp_id                 = 4; //玩家阵营
+  int32 gold                    = 5;
+  int32 gold_daily              = 6;
+  int32 diamond                 = 7;
+  int32 score                   = 8;
+  int32 level                   = 9; // 玩家等级
+  int64 exp                     = 10; // 当前等级经验
+  int32 physical                = 11; // 当前体力
+  int64 physical_next_recover_time = 13; // 下次体力自然恢复时间戳(毫秒)，0表示已达上限
+  int32 physical_buy_times      = 92; // 今日已购买体力次数
+  repeated pb_mail.Mail mails                 = 14;
+  int64 utc                          = 18; //实际是required
+  string sig                                     = 24; //实际是required
+  map<int32, string> client_config = 25; // 前端自定义配置
+  bool in_battle                                 = 26; //是否战斗中(重连时使用)
+  int32 ticket_point                  = 29; // 季票点数
+  bool is_gold_ticket                 = 30; // 是否开启黄金季票
+  repeated pb_mail.NoticeInfo notice_infos     = 31; //公告信息
+  int32 recharge                      = 33; // 累计充值数 单位:分
+  map<int32, int32> recharge_amt = 35; //按类型充值统计 key：充值类型 value：充值数量
+  pb_item.AllItemInfo item_info               = 36; // 背包信息
+  pb_avatar.AvatarAllInfo avatar_all_into     = 37; // 头像，头像框信息
+  int32 change_name_count              = 39; // 修改昵称次数
+  int64 player_create_time             = 41; // 玩家创角时间 单位：毫秒
+  int32 country                        = 42; // 玩家国籍/地区
+  int64 change_country_end_time        = 43; // 玩家修改国籍cd结束时间 单位：毫秒
+  int64 server_open_time = 73;//当前服务器开服0点的时间戳
+  int32 open_time_box_count = 74;// 开启时间宝箱的个数
+  int32 region_id        = 75; // 逻辑大区ID
+  map<int32, int32> count_map = 79; //玩家各种次数 key：count_manage表id value：已用次数
+  int32 x = 85;
+  int32 y = 86;
+  pb_lineup.LineupInfo lineup = 88; // 兵种配置
+  pb_scene.ScenePveInfo scene_pve_info = 89; // 玩家pve关卡信息
+  pb_building.BuildInfo buildings = 90;    // 模拟经营信息
+  pb_campaign.CampaignInfo campaign = 91;   // 战役数据
+  pb_hero_growth.HeroGrowthAllInfo hero_growth = 93; // 英雄养成数据
+  pb_arms.ArmyCultivationAllInfo army_cultivation = 94; // 兵种养成数据
+}
+
+message LOGIN_C_REGISTER
+{
+  string account    = 1;
+  string password  = 2;
+}
+
+message LOGIN_C_LOGIN
+{
+	string account		= 1;
+	string password	= 2;
+	bool is_token = 3; // 是否token登录，如果是则password传token
+	string version = 4; // 客户端版本号
+	string lang = 5; // 客户端语言
+  string network = 6; // 客户端网络，重连可能切换了网络这里需要同步过来
+	string device_id = 7; // 玩家设备id
+}
+
+message LOGIN_S_LOGIN
+{
+	bool is_new 	= 1;//针对已经注册账号但未创建角色的情况
+	Enter enter	= 2;
+}
+
+// 字段改成optional同时兼容完全创角和半创角
+message LOGIN_C_CREATE_ROLE
+{
+  string name  = 1;
+  int32 sex    = 2;
+}
+
+message LOGIN_S_CREATE_ROLE
+{
+	Enter enter = 1;
+}
+
+message LOGIN_C_ENTER_SCENE
+{
+
+}
+
+message LOGIN_S_ENTER_SCENE
+{
+  Enter enter = 1;
+}
+
+
+message LOGIN_C_RECONNECT
+{
+    int64 id 	= 1;
+    string sig	= 2;
+    string account=3;
+    string network = 4; // 客户端网络，重连可能切换了网络这里需要同步过来
+}
+
+message LOGIN_S_RECONNECT
+{
+	Enter enter	= 1;
+}
+
+message LOGIN_C_UPDATE_LANG
+{
+	string lang = 1;
+}
+
+message LOGIN_S_UPDATE_LANG
+{
+	string lang = 1;
+}
+
+message LOGIN_S_PONG
+{
+    int64 utc = 1; //服务器当前utc时间，毫秒
+}
+
+message LOGIN_C_CREATE_NAME
+{
+  string name  = 1;
+  int32 sex    = 2;
+}
+
+message LOGIN_S_CREATE_NAME
+{
+  string name  = 1;
+  int32 sex    = 2;
+}

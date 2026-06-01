@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package pb_user;
+
+import "common.proto";
+
+//客户端存档类型
+message CLIENT_SAVE_TYPE
+{
+	enum Enum
+	{
+		NONE = 0;
+		GUILD_OPENED = 1; //仙盟功能开放
+		GUILD_CHAT_NEWEST_ID = 2; //仙盟最新聊天信息的id
+		GUIDE_INFO = 3; //新手引导数据(废弃)
+		SEASON_INFO = 4; //赛季缓存
+		HAVE_READ_NOTICE_IDS = 5; // 已读公告缓存
+		NEWBIE_GUIDE = 6; //新手引导数据
+		CHAPTER_INFO = 7; //关卡数据
+		ARENA_GIFT_NEWEST_ID = 8; //竞技场礼包最新的已读ID
+		PLAYER_LEVEL = 9; //玩家等级
+		NEW_FUNC_OPEN = 10; //新功能开启
+		SHOW_NEW_TEXT = 11; //功能按钮是否显示New
+		BATTLE_TRAP_SET = 12; //战斗场景机关
+		SCORE_UNLOCK_SCENE_ID = 13; //解锁的最大的场景ID
+		SETTING = 14; //设置
+		SCENE_TURN_DATA = 15; //场景轮换数据
+		FIRST_OPEN_PANEL_OPEN_DIALOG = 16; //第一次打开界面弹出对话
+		FIRST_MATCH_TYPE_OPEN_DIALOG = 17; //第一次进某个对战模式弹出对话
+		FIRST_ENTER_MAP = 18; //第一次进某个地图
+		READ_COMMUNITY_NEWS = 19; //已读社区新闻
+		FIRST_GUILD_TECH_UNLOCK = 20; //第一次解锁仙盟科技
+		PLAYER_SKILL_STATE = 21; //玩家技能状态
+		HERO_TALENT_STATE = 22; //英雄天赋气泡状态
+		HERO_SKIN_STATE = 23; //英雄皮肤状态
+		GUILD_PASSCARD_SHARE = 24; //公会通行证分享领取状态
+		YUANJING_SHOP_OPEN_STATE = 25;//源晶商店开启状态
+		APP_REVIEW_STATE = 26;//应用评价
+		PERSONALITY_REPL_RECORD = 27; //阻止替换性格的行为，每个英雄最多阻止一次这个行为（终生1次），客户端用
+	}
+}
+
+message LOGOUT_TYPE
+{
+	enum Enum
+	{
+		NONE               = 0;
+		SERVER_STOP        = 1;// 停服维护
+		REPEAT_LOGIN       = 2;// 你的账号正在用其它设备登录
+		FORBID_LOGIN       = 3; //封号处理
+		EMPTY_CONNECTION   = 4; //连接建立成功后必须在20秒之内登陆逻辑服成功，否则就会关闭连接防止空连接攻击
+		REQUEST_FREQUENTLY = 5; //请求频繁，被认为是用合法指令数据攻击
+		TOTAL_ONLINE_CONNECTIONS      = 6; //你这个坏人,单个IP在线连接数超上限,请联系客服
+		ILLEGAL_CONNECTIONS_PERMINUTE =  7; //你这个坏人,单个IP一分钟建立未鉴权连接数超上限,请联系客服
+		TOTAL_CONNECTIONS_PERMINUTE   =  8; //你这个坏人,单个IP一分钟建立连接数超上限,请联系客服
+		ACCOUNT_DEL        = 9; // 账号删除
+		REAL_INFO_EXPIRE   = 10; // 实名验证过期
+	}
+}
+
+message HEAD_TYPE
+{
+	enum Enum
+	{
+		NONE         = 0;
+		USER         = 1; // 玩家头像
+		GUILD        = 2; // 仙盟徽章
+	}
+}
+
+message PRIVILEGE_TYPE
+{
+	enum Enum
+	{
+		NONE                  = 0;
+		FREE_ADVERT           = 1;// 免广告特权
+		DOUBLE_SCORE          = 2;// 对战胜利杯数增加
+		PROTECTED_SCORE       = 3; //对战失败杯数保护
+		DOUBLE_TICKET_POINT   = 4; //对战获得通行证积分翻倍
+		DOUBLE_GOLD           = 5; //对局获得金币翻倍
+		DOUBLE_HERO_DEGREE    = 6; //对战获得熟练度翻倍
+		COLOR_NAME            = 7; //个性名称
+		ARENA_DAILY_ADDITION  = 8; //竞技场每日好礼收益加成
+		EXPEDITION_COUNT_ADD  = 9; //远征额外体力(次数)
+		PLAYER_BACK_DISCOUNT  = 10; //回归之旅商店折扣
+		EXPEDITION_COUNT_ADD_PLAYER_BACK  =11; //远征额外体力(次数) - 回归特权
+	}
+}
+
+//更新用户数据
+message USER_S_UPDATE
+{
+	int32 gold		  	 = 1;
+	int32 diamond	  	 = 2;
+	int32 recharge 		 = 3;
+	int32 level 			 = 4; // 等级
+	int64 exp 				 = 5; // 经验
+	int32 physical 		 = 6; // 当前体力
+	int64 physical_next_recover_time = 7; // 下次体力自然恢复时间戳(毫秒)，0表示已达上限
+	int32 physical_buy_times = 8; // 今日已购买体力次数
+}
+
+message USER_C_BUY_PHYSICAL
+{
+}
+
+message USER_S_BUY_PHYSICAL
+{
+	int32 physical = 1; // 当前体力
+	int64 diamond = 2; // 当前钻石
+	int32 physical_buy_times = 3; // 今日已购买体力次数
+	int64 physical_next_recover_time = 4; // 下次体力自然恢复时间戳(毫秒)，0表示已达上限
+}
+
+//服务端主动断开连接前发送
+message USER_S_LOGOUT
+{
+	int32 logout_type	= 1;//对应 LOGOUT_TYPE
+}
